@@ -1,4 +1,4 @@
-﻿// ==== MATRIX ====
+// ==== MATRIX ====
 const canvas = document.getElementById("matrixCanvas");
 const ctx = canvas.getContext("2d");
 const starField = document.getElementById("starField");
@@ -8,8 +8,16 @@ function startBackgroundMusic() {
   if (!bgMusic) return;
   bgMusic.volume = 0.55;
   let startedAtOffset = false;
+  let musicStarted = false;
+
+  const removeInteractionListeners = () => {
+    window.removeEventListener("click", tryPlay);
+    window.removeEventListener("touchstart", tryPlay);
+    window.removeEventListener("keydown", tryPlay);
+  };
 
   const tryPlay = () => {
+    if (musicStarted) return;
     if (!startedAtOffset) {
       try {
         bgMusic.currentTime = 10;
@@ -19,11 +27,10 @@ function startBackgroundMusic() {
       }
     }
     bgMusic.play().then(() => {
-      window.removeEventListener("click", tryPlay);
-      window.removeEventListener("touchstart", tryPlay);
-      window.removeEventListener("keydown", tryPlay);
+      musicStarted = true;
+      removeInteractionListeners();
     }).catch(() => {
-      // Browser blocked autoplay; keep user-interaction listeners active.
+      // Browser blocked autoplay; keep retry points active.
     });
   };
 
@@ -32,12 +39,18 @@ function startBackgroundMusic() {
       bgMusic.currentTime = Math.min(10, Math.max(0, (bgMusic.duration || 10) - 0.25));
       startedAtOffset = true;
     }
-  }, { once: true });
+    tryPlay();
+  });
+
+  bgMusic.addEventListener("canplay", tryPlay);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") tryPlay();
+  });
 
   tryPlay();
-  window.addEventListener("click", tryPlay, { once: true });
-  window.addEventListener("touchstart", tryPlay, { once: true });
-  window.addEventListener("keydown", tryPlay, { once: true });
+  window.addEventListener("click", tryPlay);
+  window.addEventListener("touchstart", tryPlay);
+  window.addEventListener("keydown", tryPlay);
 }
 
 startBackgroundMusic();
@@ -367,9 +380,9 @@ const photos = [
   ["photo5.png", "photo6.png"]
 ];
 const texts = [
-  "Tu es incroyable \u2764\uFE0F",
-  "Ton sourire illumine tout \u2728",
-  "Je suis heureux de te conna\u00EEtre \uD83C\uDF38"
+  "Happy 19th Birthday, Judy. Honestly, I’ve been thinking all day about what to write to you, but no words seem to be enough to describe how much you mean to me. 19 is such a beautiful age, and seeing you grow into the person you are today makes me so proud to have you in my life.",
+  "I want you to know that you’re not just my girlfriend; you’re my safe place and my greatest joy. I hope this year treats you with the same kindness you show everyone else.",
+  "I’m looking forward to every single moment we’re going to spend together in this new chapter of your life. May your day be as bright and beautiful as your soul. I love you more than you’ll ever know"
 ];
 let page = 0;
 let finalSequenceStarted = false;
