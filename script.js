@@ -159,11 +159,14 @@ function animateMainMessage(text, container, duration, callback) {
 }
 
 // ==== Typing effect ====
+let typingToken = 0;
 function typeText(text, container, speed, callback) {
+  const token = ++typingToken;
   container.textContent = "";
   let i = 0;
 
   function type() {
+    if (token !== typingToken) return;
     if (i < text.length) {
       container.textContent += text[i++];
       setTimeout(type, speed);
@@ -380,9 +383,9 @@ const photos = [
   ["photo5.png", "photo6.png"]
 ];
 const texts = [
-  "Happy 19th Birthday, Judy. Honestly, I’ve been thinking all day about what to write to you, but no words seem to be enough to describe how much you mean to me. 19 is such a beautiful age, and seeing you grow into the person you are today makes me so proud to have you in my life.",
-  "I want you to know that you’re not just my girlfriend; you’re my safe place and my greatest joy. I hope this year treats you with the same kindness you show everyone else.",
-  "I’m looking forward to every single moment we’re going to spend together in this new chapter of your life. May your day be as bright and beautiful as your soul. I love you more than you’ll ever know"
+  "Happy 19th Birthday, Judy. Honestly, I've been thinking all day about what to write to you, but no words seem to be enough to describe how much you mean to me. 19 is such a beautiful age, and seeing you grow into the person you are today makes me so proud to have you in my life.",
+  "I want you to know that you're not just my girlfriend; you're my safe place and my greatest joy. I hope this year treats you with the same kindness you show everyone else.",
+  "I'm looking forward to every single moment we're going to spend together in this new chapter of your life. May your day be as bright and beautiful as your soul. I love you more than you'll ever know"
 ];
 let page = 0;
 let finalSequenceStarted = false;
